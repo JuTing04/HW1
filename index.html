@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>美妝排行TOP10</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #fce4ec, #e0f7fa);
+    }
+
+    .overlay {
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: #111;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    ul {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0;
+      list-style: none;
+    }
+
+    li {
+      background: #fff;
+      margin: 16px 0;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    li img {
+      width: 100px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .product-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+   .info-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rank-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #d84f8c;
+      margin-bottom: 6px;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 4px;
+    }
+
+    .product-brand {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .product-description {
+      font-size: 14px;
+      color: #444;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>美妝排行TOP10</h1>
+    <div class="controls">
+      <label for="category">選擇分類：</label>
+      <select id="category">
+        <option value="">--請選擇--</option>
+        <option value="foundation">粉底</option>
+        <option value="concealer">遮瑕</option>
+        <option value="eyebrow">眉筆</option>
+      <option value="eyeliner">眼線筆</option>
+        <option value="mascara">睫毛膏</option>
+        <option value="blush">腮紅</option>
+        <option value="contour">修容</option>
+        <option value="lipstick">口紅</option>
+        <option value="setting_spray">定妝噴霧</option>
+      </select>
+    </div>
+    <div id="list-container"></div>
+  </div>
+
+   <script>
+    const foundationTop10 = [
+      {
+        rank: 1,
+        brand: "KATE TOKYO",
+        name: "幻象零瑕膜粉底液 SPF30",
+        image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/122051/1/_160x160_122051_20250223145213LViDZgkXgO.jpg",
+        description: "遮瑕力夠，毛孔、泛紅、痘疤基本都可以遮住。且妝感不厚重。持妝力不錯，一整天也不會斑駁或浮粉，夏天用也OK！長時間使用也不易暗沉，持久亮澤。質地滑順好推開，而且內含保濕成分乾肌也能用。"
+      },
+      {
+        rank: 2,
+        name: "超聚光活膚精華粉底",
+        brand: "SHISEIDO",
+        image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/113875/1/_160x160_113875_20230824080107TIqlBbHDAb.jpg",
+        description:"極致服貼、24小時保濕、 越用越亮！精華液般的質地，遮瑕度一般，上妝輕盈舒適零粉感，水潤透亮超精緻，完妝後煥發健康光澤。"
+      },
+      {
+        rank: 3,
+        name: "零粉感超持久粉底",
+        brand: "LANCÔME蘭蔻",
+        image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/117034/1/_160x160_117034_20240306100308tMTmZTwJIU.jpg",
+        description:"輕盈不黏膩，添加精華，長效保濕持妝不卡粉且粉質細緻。“控油珍珠粉末”針對出油處吸油，毛孔瑕疵、油光瞬間柔焦神隱全天透出完美微霧光、零暗沉奶油肌！"
+      },
+       {
+    rank: 4,
+     name: "裸光肌萃粉底精華",
+   brand: "NARS",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/104446/1/_160x160_104446_20220307025742UKWcNVqMtO.jpg",
+    description:"0暗沉養膚底妝，質地蘊含70%奢潤植萃保養精華，16H持久水裸光肌。"
+  },
+  {
+    rank:5,
+     name: "無極限超持久輕粉底 SPF25 PA+++",
+    brand: "shu uemura 植村秀 ",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/122220/1/_160x160_122220_20250306140952XMMmoXQdAo.png",
+    description:"新添加頂級山茶花籽油，質地細膩融膚。保濕服貼不卡粉！控油粉體，全日控油不暗沉！24H維持絕美輕透水霧底妝！"
+  },
+  {
+   rank: 6,
+     name: "粉持久完美持妝粉底 SPF10/PA++",
+    brand: "Estée Lauder 雅詩蘭黛",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/11171/1/_160x160_11171_w_250xh_250xfar_C.jpg",
+    description:"清爽透氣的超微柔焦隱型粉，有效遮瑕又能讓肌膚呼吸不黏膩，不易堵塞毛孔的控油成分，同時添加高效濕潤因子，妝效更加完美均勻。（此商品不含壓頭）"
+  },
+  {
+    rank: 7,
+     name: "FIT ME反孔特霧粉底液 PRO版",
+    brand: "MAYBELLINE 媚比琳 ",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/110275/2/_160x160_30025.jpg",
+    description:"油及毛孔粗大等問題，能有效修飾並打擊油光。不適合乾肌，長時間會氧化卡粉！"
+  },
+  {
+    rank: 8,
+     name: "粉無痕活潤精華粉底液",
+    brand: "MAKE UP FOR EVER",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/116843/1/_160x160_116843_20240221040458pTcUKmguiD.jpg",
+    description:"24-HOUR 潤澤拋光、柔焦持妝，且注入精華水潤肌膚"
+  },
+  {
+    rank: 9,
+    name: "超模光感精華水氣墊",
+    brand: "YSL",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/104510/1/_160x160_104510_20220301064044SgQomWKEWj.png",
+    description:"粉底注入精華，肌膚水光呈現感。避免出油、脫妝，打造24H持久閃耀女神美肌。並添加金盞花萃取及維他命E，舒緩肌膚不易致痘，讓肌膚光滑柔嫩、盈透閃耀。"
+  },
+  {
+    rank: 10,
+    name: "無極限裸光精萃粉底",
+    brand: "shu uemura 植村秀 ",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/119329/1/_160x160_119329_20240827075637lSAaVPpIVY.jpg",
+    description: "使用毛孔更緊緻，有效改善暗沉，肌膚柔嫩細緻超有感！精準校正蠟黃與暗沉問題，打造出更加高級淨透的妝效，同時導入山茶花籽油，深層補水滋潤肌底，底妝持久服貼不暗沉不卡紋，帶妝整日依舊精緻透光！"
+  }
+];
+
+const concealerTop10 = [
+  {
+    rank: 1,
+    name: "雙色遮瑕膏 Founcealer SPF20 PA++",
+    brand: "&be",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/112327/1/_160x160_112327_20231104065024OMnbbiLNVX.jpg",
+    description:"自然妝容質地好延展、服貼度佳。添加保養成份，預防肌膚乾燥。溫和配方，不含界面活性劑、合成香料等成分。分自然色（自然膚/橘）、明亮色（明亮膚/橘）適合膚色較白皙、或淚溝較深的人、橘粉感（亮粉/橘）適合打造偏粉色系的妝容"
+  },
+  {
+    rank: 2,
+    name: "幻飾校色遮瑕霜 COLOR DUO TRICK CONCEALER",
+    brand: "VISEE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/121598/1/_160x160_121598_20250121073731vGDcZKCumc.jpg",
+    description:"幻飾校色遮瑕霜共推出八款色號，能自然遮蓋各種肌膚困擾。質地絲滑易延展。疊加依然輕薄不厚重，但遮瑕力強。質地輕盈柔滑且持久。含有保濕成分，賦予容易乾燥的眼周、臉頰和嘴部周圍的滋潤並無添加香料。"
+  },
+  {
+    rank: 3,
+    name: "無微不緻遮瑕棒 EXTRA SKINNY CONCEALER",
+    brand: "VISEE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/117352/1/_160x160_117352_20240327060213gAvbUSNnFn.jpg",
+    description:"零粉感的輕薄粧感，緊密貼合肌膚形成均勻粧膜，不易脫粧。有效遮蓋肌膚瑕疵，打造微霧奶油光感粧效。同時添加保濕成分，保持肌膚滋潤且無添加香料。"
+  },
+  {
+    rank: 4,
+    name: "FIT ME遮遮稱奇遮瑕膏",
+    brand: "MAYBELLINE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/77343/1/_160x160_77343.jpg",
+    description:"輕盈服貼、勻膚超無瑕且遮瑕力強，添加保濕成分全日不卡紋"
+  },
+  {
+    rank: 5,
+    name: "超完美持久遮瑕乳",
+    brand: "DIOR",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/96316/1/_160x160_96316_20200430090226ZfgfaVgdjk.jpg",
+    description:"遮瑕注入保養成分，能24小時深層保濕、膚色均勻，讓肌膚更加細滑。經測試可抗熱耐汗，24小時超持妝，自然不厚重。"
+    },
+  {
+    rank: 6,
+    name: "一抹隱形雙色遮瑕盤",
+    brand: "ettusais",
+    image_url: "https://cf.shopee.tw/file/sg-11134201-7rdvf-m0k8hsld8yki1d",
+    description:"輕巧攜帶方便，延展性佳，妝容服貼不易卡粉。遮瑕力普通!"
+  },
+  {
+    rank: 7,
+    name: "Profix零卡紋超時遮瑕膏",
+    brand: "1028",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/118660/2/_160x160_36833.jpg",
+    description:"3色遮瑕x 2色校色，高遮瑕、零卡紋、超持貼，輕盈極細粉體不厚重不暗沉。"
+  },
+  {
+    rank: 8,
+    name: "誘光隱色遮瑕組SPF25/PA+++",
+    brand: "IPSA",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/79826/1/_160x160_79826.jpg",
+    description:"三色一組的遮瑕組，可自在調出適合自己的膚色，輕鬆遮蓋肌膚的色差與小瑕疵"
+  },
+  {
+    rank: 9,  
+    name: "服服貼貼遮瑕膏",
+    brand: "1028",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/98216/1/_160x160_98216_20200915030630PtWDuQrNlc.jpg",
+    description:"超貼膚水潤遮瑕，滑順好推開不卡紋。高遮瑕、高持妝，長時不暗沉、不脫妝。"
+  },
+  {
+    rank: 10,
+    name: "恆久完美精準無瑕遮瑕液",
+    brand: "YSL",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/116859/1/_160x160_116859_20240222021105NXtWrDHJRO.png",
+    description:"遮瑕力好，妝效持久不易脫妝、氧化。成分包含保濕精華，乾肌可入。"
+  }
+];
+
+const eyebrowTop10 =
+[
+  {
+    rank: 1,
+    name: "持色自然柔霧眉筆",
+     brand: "KISSME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/93368/1/_250x250_93368.jpg",
+    description:"1.6mm細緻筆芯，附螺旋眉刷柔軟蓬鬆，暈染眉色不刮膚筆芯軟硬度適中，自然柔滑好上色抗汗、防水配方添加維他命B5(保護眉毛成分)，使眉毛光澤強韌有彈性。"
+  },
+
+ {
+    rank: 2,
+    name: "武士刀眉筆 EYEBROW HARD FORMULA",
+     brand: "shu uemura 植村秀",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/76472/1/_160x160_76472.jpg",
+    description:"筆頭完美復刻日本經典武士刀型，讓眉筆永遠維持最適合上色的斜面與角度，完美硬度的筆芯能描繪出根根分明的立體毛流，獨家科技配方防水、防汗、防摩擦不掉色，不暈才有毛流感！"
+  },
+
+{
+ rank: 3,
+    name: "就是自然持色眉筆",
+     brand: "dejavu",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/92625/1/_160x160_92625_20200417075216zRlTIzwOhY.jpg",
+    description:"採用1.5mm×3mm極細橢圓筆芯，粉末型眉鉛筆，固化粉末能均勻附著於肌膚 ，打造清晰眉型。耐皮脂、汗水、淚水及耐搓揉。"
+  },
+{
+rank: 4,
+    name: "新一代宛若真眉柔霧塑型眉膠筆(升級版)",
+     brand: "MAYBELLINE 媚比琳",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/113881/1/_160x160_113881_20230824121820jYhAtMBuvi.png",
+    description:" 眉膠筆獨特的眉膠幻化眉粉材質，眉彩完妝瞬間展現蓬鬆輕盈的眉型◦眉膠筆具三角水滴型筆尖，輕鬆勾勒眉型,，展現眉峰與眉尾的線條感。"
+  },
+{
+rank: 5,
+    name: "武士道塑型眉筆",
+     brand: "MAYBELLINE 媚比琳",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/89047/1/_160x160_89047.jpg",
+    description:"全能筆芯！完美油蠟配方自然顯色 X 絕不結塊零失手武士刀筆尖 X 完美油蠟配方，一筆自然填色，輕鬆描繪擬真毛流，自然顯色，滑順不結塊！"
+  },
+{
+rank: 6,
+    name: "極細持色眉筆",
+     brand: "heme",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/100138/1/_160x160_100138_20220209022045WqjIFKvlDn.jpg",
+    description:"免削式自動眉筆設計，輕鬆控制筆芯長度，眉筆末端附有眉刷，不必擔心色塊感，方便攜帶好上手！"
+  },
+{
+rank: 7,
+    name: "專業自動眉筆",
+     brand: "CEZANNE 倩詩麗",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/83178/1/_160x160_83178_20210115040904OEqcEYOOIH.jpg",
+    description:"不暈染 含吸油性粉末能完美附著肌膚不暈染。防水配方具防水、防汗、抗油脂之功效耐頭髮摩擦讓眉妝持久。旋轉式筆芯及螺旋狀眉刷，不須削筆芯且含保濕成分。"
+  },
+{
+rank: 8,
+    name: "擦擦塑型眉飾筆",
+     brand: "A.M Fairyland",
+    image_url: "https://shoplineimg.com/5d6cf2dcd47dbc00017d45f6/659a21f6a0c0d20023eb53de/800x.jpg?",
+    description:"超持久、超耐汗、超顯色，立體三角筆芯，軟硬適中的筆頭。搭配填補眉色斜角刷，眉彩更加立體自然。"
+  },
+  {
+rank: 9,
+    name: "0.33mm仿真飄霧眉筆 ",
+     brand: "shu uemura 植村秀",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/123781/1/_160x160_123781_20250604023503HoZbitdPtU.jpg",
+    description:"精準筆觸，打造如飄霧眉般自然仿真的毛流感！全系列共推出4個色選，專為亞洲膚色與髮色調製。筆芯滑順顯色、不易斷裂，24小時持久鎖色，防汗防摩擦，不暈不糊！"
+  },
+{
+rank: 10,
+    name: "素描高手造型眉筆 DRAWING EYEBROW",
+     brand: "ETUDE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/49257/1/_160x160_49257_w_250xh_250xfar_C.jpg",
+    description:"利用三角型筆型的角度，使每一根眉毛呈現乾淨利落的形狀。 觸感柔軟不刺激 含有維他命E，可賦予保濕與柔和觸感。 耐溫性佳維持中軟硬度出色的耐溫性，長久保持適當硬度與特定的使用觸感，使顯色度維持在自然狀態。 自然的顯色力 色彩與底色的自然調和，呈現出自然的眉彩。"
+  }
+];
+
+const eyelinerTop10 =[
+     {
+rank: 1,
+    name: "凝色柔滑眼線膠筆N",
+     brand: "KATE TOKYO 凱婷",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/111654/1/_250x250_111654_20230509105246gATvrbNhMO.jpg",
+    description:"先融化再凝固的絲滑筆觸，10秒速乾。緊密服貼，大哭也不暈染的超強持妝力。"
+  },
+
+ {
+rank: 2,
+    name: "激細滑順眼線膠筆 CREAMY TOUCH LINER",
+     brand: "CANMAKE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/88849/1/_160x160_88849_20201223084039ZWKbgzswoM.jpg",
+    description:"直徑1.5MM極致滑順的筆尖，輕柔的滑過眼皮，低阻力特殊配方讓描繪眼線時不傷害眼部脆弱肌膚，旋轉設計維持筆頭尖細"
+  },
+
+
+ {
+rank: 3,
+    name: "24小時完美持久防水抗油眼線筆",
+     brand: "WAKEMAKE ",
+    image_url: "https://img.skmonline.com.tw/App_Images/727/ChannelProduct/2025/0123/e69590c9-88a8-4655-a77d-a2e129ae6416.jpg",
+    description:"強效的防水防油眼線筆，防水 / 防油。"
+  },
+
+
+ {
+rank: 4,
+    name: "3D極細防水眼線膠筆 GEL PENCIL EYELINER",
+     brand: "shu uemura 植村秀",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/52381/1/_160x160_52381_w_250xh_250xfar_C.jpg",
+    description:"3D極細防水眼線膠筆，超激細、更滑順、防水抗汗超持久！全六色眼線顏色更飽和！"
+  },
+
+
+ {
+rank: 5,
+    name: "銅牆鐵壁持妝快乾子彈眼線筆",
+     brand: "WAKEMAKE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/94944/1/_160x160_94944_20200206072017IvOdKVxbCm.jpg",
+    description:"，獨特的子彈型筆頭軟硬適中，能吸附適量眼線液，精準描繪防手震，質地快乾抗暈染，線條俐落不失手。"
+  },
+
+
+ {
+rank: 6,
+    name: "dejavu",
+     brand: "就是不暈柔霜眼膠筆",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/87042/1/_160x160_87042.jpg",
+    description:"1.5mm×3mm極細橢圓筆芯。手感滑順，輕鬆好延展，親膚性強的溫和配方。抗皮脂、汗水、淚水、防水、不暈染眼膠筆。"
+  },
+
+
+ {
+rank: 7,
+    name: "持久流暢眼線液筆",
+     brand: "Solone",
+    image_url: "https://diz36nn4q02zr.cloudfront.net/webapi/imagesV3/Original/SalePage/6277674/1/638844543235230000?v=1&quality=30",
+    description:"筆觸滑順流暢，出水穩定，搭配細緻纖柔筆尖，輕鬆繪製色澤飽滿精緻眼線。薄膜劑型，服貼、持久、不易脫妝，打造自然深邃眼神。"
+  },
+
+ {
+rank: 8,
+    name: "絕不失手眼線膠筆",
+     brand: "ettusais 艾杜紗",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/99633/2/_160x160_34693.jpg",
+    description:"極細筆芯、滑順質地、濃密顯色、超防水、超保濕、無香料、長時間不脫妝且無香料!"
+  },
+
+ {
+rank: 9,
+    name: "超流線抗暈眼線膠筆",
+     brand: "CLIO 珂莉奧",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/73882/1/_160x160_73882.jpg",
+    description:"2mm極細，不暈染且持久防水!"
+  },
+
+
+ {
+rank: 10,
+    name: "極細防水防油眼線筆 Eco Soul Powerproof Super Slim Eyeliner",
+     brand: "theSAEM",
+    image_url: "https://lh3.googleusercontent.com/kflcd5fQHpicWD0qYzVouWwAhvu7VyO0zj6HfmqFANxwx2CLwC9ZlUB7qs5PKLvnUTiUVYXNHoKIfGzYXu0LqH14GqWPWtnZBC8=s640-c",
+    description:"~ 2mm纖細筆頭、光滑的凝膠質地和超強防水防油!"
+  }
+];
+
+const mascaraTop10=[
+
+{
+rank: 1,
+    name: "美次元天生美睫防水睫毛膏",
+     brand: "KISSME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/120688/2/_160x160_38740.jpg",
+    description:" 持久不暈染配方- 抗淚水、汗水、皮脂及摩擦，打造根根分明的纖長睫毛，優雅不結塊，就像自己的睫毛變長一樣，全日Hold住捲翹度，富含6種美容液成分，上妝同時滋養睫毛!"
+  },
+
+ {
+rank: 2,
+    name: "細睫控360°零死角防水睫毛膏EX",
+     brand: "KISSME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/114184/1/_160x160_114184_20230908081151XLRtAplRWQ.jpg",
+    description:"3.9mm三角極細刷頭，細短睫輕鬆刷，輕盈防水配方，超防水、抗皮脂、防摩擦、不暈染，全日鎖定捲翹持久定型，滑順不結塊，添加12種睫毛美容液成分，邊刷邊保養!"
+  },
+
+
+ {
+rank: 3,
+    name: "花漾美姬細睫控360o零死角睫毛膏",
+     brand: "KISSME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/91017/1/_160x160_91017.jpg",
+    description:"質地輕盈，超防水、抗皮脂、防摩擦、不暈染，滑順不結塊，添加睫毛美容液成分，邊刷邊保養!"
+  },
+
+
+ {
+rank: 4,
+    name: "飛天翹防水睫毛膏",
+     brand: "MAYBELLINE 媚比琳",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/106667/1/_160x160_106667_20220816080641teFmBUroCX.jpg",
+    description:"纖長X 根根分明! 24H不暈不塌! 1刷飛天翹!24H飛天瞬翹科技」，膏體輕盈!添加角蛋白複合物，能滋養睫毛使其強韌，維持24H長翹不斷裂，獨特扇形梳刷頭，輕刷持久定型、不結塊。24H防水抗暈卻超好卸。"
+  },
+
+
+ {
+rank: 5,
+    name: "空氣感捲翹睫毛膏",
+     brand: "2aN",
+    image_url: "https://img.shopping.friday.tw/images/product/287/8633994/8633994_3_1.webp?131348",
+    description:"纖長捲翹睫毛膏，捲翹超持久力、貼合睫毛不結塊。超強防水、防汗、防暈染。獨特1.5mm超極細三角刷頭，搭配螺旋狀刷毛，無論眼頭、眼角或是下睫毛都能深入死角，零死角包覆每一根睫毛，即使短細睫毛也不放過。"
+  },
+
+
+ {
+rank: 6,
+    name: "花漾美姬超！持久立挺翹長防水睫毛膏",
+     brand: "KISSME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/102129/2/_160x160_34181.png",
+    description:"超持久防水，5mm纖長纖維EX，根根分明。超快乾，鎖定捲翹，持久定型含6種美容液成分，上妝同時滋養睫毛!"
+  },
+
+
+ {
+rank: 7,
+    name: "精緻捲翹睫毛膏",
+     brand: "CANMAKE",
+    image_url: "https://diz36nn4q02zr.cloudfront.net/webapi/imagesV3/Original/SalePage/10265529/0/638864469290200000?v=1",
+    description:"極細刷頭2.5mm直徑，防水抗汗、抗皮脂、防脫妝，塗抹也不結塊。液體能均勻包裹睫毛讓你隨心所欲創造不論是細緻、根根分明自然或束狀睫毛。 "
+  },
+
+ {
+rank: 8,
+    name: "超持久捲翹睫毛膏",
+     brand: "資生堂",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/111115/1/_160x160_111115_20230414134603qblpFnFCFB.jpg",
+    description:"13小時持妝，添加美睫 保養精華同步修護睫毛使之回 復捲翹彈力韌性。無添加香料經肌膚敏感性測試，型刷頭能輕鬆貼合睫毛連細 節處也能均勻刷飾，添加美睫保養精華同步修護睫毛。"
+  },
+
+ {
+rank: 9,
+    name: "非凡力量睫毛膏 GENIUS FORCES MASCARA",
+     brand: "DAZZSHOP",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/80916/1/_160x160_80916.jpg",
+    description:"特殊凹凸刷頭可與睫毛根部緊密貼合即使是較短的睫毛也可輕鬆刷塗，不易結塊且可均勻分佈於睫毛打造既濃密又根根分明的美睫。"
+  },
+
+
+ {
+rank: 10,
+    name: "魔束捲翹睫毛膏",
+     brand: "ettusais 艾杜紗",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/97332/2/_160x160_34694.jpg",
+    description:"捲度輕柔纖長，無纖維成分，極細三角刷頭，平滑服貼，不易結塊，添加睫毛美容液成分保養睫毛，長效抗汗、抗油、防水，且根根分明，無香料、通過敏感測試！"
+  },
+];
+const blushTop10=[
+    {
+rank: 1,
+    name: "恆久完美透膚煙染腮紅",
+     brand: "YSL",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/121367/1/_160x160_121367_20250106002602fHjdFioUDC.jpg",
+    description:"粉狀腮紅容易堆疊而好掌握濃淡的特色，同時結合如同霜狀高保濕的粉體，「觸膚即融膚」一抹融膚化為細膩的粉質，親膚又自然貼妝，不顯毛孔更不顯紋路，更是打造宛如從肌底透出、無比自然的完美紅暈"
+  },
+
+ {
+rank: 2,
+    name: "花漾腮紅 Cheek Pop",
+     brand: "CLINIQUE 倩碧",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/57442/1/_160x160_57442.jpg",
+    description:"新手友善！顯色度適中，不會一下手就產生無法挽回的濃妝感。粉質細緻不顯毛孔，自然顯色零飛粉！顏色持久，一整天維持原色不脫妝！"
+  },
+
+
+ {
+rank: 3,
+    name: "晶采淨妍頰彩 PURE COLOR BLUSH",
+     brand: "SUQQU",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/76427/1/_160x160_76427.gif",
+    description:"珠光X霧光，賦予雙頰光澤與立體"
+  },
+
+
+ {
+rank: 4,
+    name: "晶采柔艷頰彩",
+     brand: "SUQQU",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/118636/2/_160x160_36808.jpg",
+    description:"無油處方，粉體表面植物壓紋、華麗雅緻，外盒輕薄磁吸式設計。"
+  },
+
+
+ {
+rank: 5,
+    name: "B.A水漾花綻漸層頰彩 B.A 3D OASIS BLUSH",
+     brand: "POLA",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/118870/1/_160x160_118870_20240723020812hkBkhJIeef.jpg",
+    description:"能為頰部增添如花朵般嬌豔欲滴的紅潤感*與光澤感。顯色度可依照平時喜好的妝感調整，也能將淺色作為打亮色使用。"
+  },
+
+
+ {
+rank: 6,
+    name: "晶采光潤頰彩 SUQQU MELTING POWDER BLUSH",
+     brand: "SUQQU",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/105059/1/_160x160_105059_20220518023052ADINPYLUjk.jpg",
+    description:"適合淡妝使用，無香精，輕巧方便攜帶，"
+  },
+
+
+ {
+rank: 7,
+    name: "炫色腮紅",
+     brand: "NARS",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/117859/1/_160x160_117859_20240509022322kdpHBEGNck.jpg",
+    description:"16小時持色，妝效輕盈舒適。高度顯色。質地絲滑細緻，易於暈染，同時修飾瑕疵!"
+  },
+
+ {
+rank: 8,
+    name: "摩登雙色腮紅",
+     brand: "2aN",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/120285/2/_160x160_39598.jpg",
+    description:"易上妝且高顯色，上妝輕柔粉質細緻，粉末微細不飛粉。上妝不結塊顯色均勻。光滑細緻的暈染效果。持妝一整天，採用保濕服貼的粉末使腮紅有良好的延展性和服貼性。"
+  },
+
+ {
+rank: 9,
+    name: "透光立體頰采 Pure Complexion Blush",
+     brand: "RMK",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/110597/1/_160x160_110597_20230316011449jJAjXtmVBg.jpg",
+    description:""
+  },
+
+
+ {
+rank: 10,
+    name: "優雅玫色修容餅",
+     brand: "media 媚點",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/76829/1/_160x160_76829.png",
+    description:"具有優質的透明感和高顯色。毫無粉感的柔滑觸感，實現與潤澤肌膚融為一體的貼合感。"
+  }
+
+];
+        const contourTop10=[
+            {
+rank: 1,
+    name: "超完美持久亮采餅",
+     brand: "DIOR 迪奧",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/101814/1/_160x160_101814_20210707041756nAyJuIHHbw.jpg",
+    description:"完美融合底妝，散發由內而外的透亮光澤；添加玻尿酸保濕精華，長效舒適、貼膚持妝。3款妝效：細緻珠光、炫彩霓光²、閃耀聚光，6款色選：適合所有肌膚色調。"
+  },
+
+ {
+rank: 2,
+    name: "珠光修容霜 PEARL GLOW HIGHLIGHT",
+     brand: "CEZANNE 倩詩麗",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/90476/1/_160x160_90476_20210115040119KWucnMFSir.jpg",
+    description:"大量的珠光極微細粒子增添臉部光澤與透明感，彷彿肌膚內建蘋果光由內而外散發出好氣色。"
+  },
+
+
+ {
+rank: 3,
+    name: "霧面打亮餅",
+     brand: "heme",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/119945/1/_160x160_119945_20240929011247WaSOdyPvqe.jpg",
+    description:"有效修飾肌膚紋理和凹陷處，打造平整無瑕的乾淨底妝。"
+  },
+
+
+ {
+rank: 4,
+    name: "三色修容餅 Triple Contour Palette",
+     brand: "heme",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/98333/1/_160x160_98333_20200924053408nfbUvzjvCk.png",
+    description:"精選冷暖色調，特調三色色塊圓型均分，少量多次疊出零界線自然立體小臉。"
+  },
+
+
+ {
+rank: 5,
+    name: "美術課三色打亮餅 ART CLASS BY RODIN HIGHLIGHTER",
+     brand: "too cool for school",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/88128/1/_160x160_88128.jpg",
+    description:"打破傳統的輪廓修容，打造出明亮立體的妝感。具有高度的顯色度和帶有微光的質地，能夠突顯面部的亮點。"
+  },
+
+
+ {
+rank: 6,
+    name: "我愛修修小V臉修容盤",
+     brand: "I'M MEME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/89459/1/_160x160_89459.jpg",
+    description:"最適合亞洲人膚色的修容色調，粉質細緻 親膚不結塊，零技巧超簡易，深邃眼妝必備。"
+  },
+
+
+ {
+rank: 7,
+    name: "我愛小臉修容打亮棒",
+     brand: "I'M MEME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/114973/2/_160x160_33736.jpg",
+    description:"2 in 1一筆完成修容+打亮，打造瘦瘦立體小臉!絲絨滑順質地，較粉狀修容更持久、服貼於肌膚。筆狀設計精準掌握修容位置、方便攜帶，用手即可打造自然的陰影及打亮!"
+  },
+
+ {
+rank: 8,
+    name: "美術課三色修容餅 ARTCLASS By Rodin",
+     brand: "too cool for school",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/66580/1/_160x160_66580.jpg",
+    description:"由三種顏色混合而成的修容，適合東方人的膚色 · 粉質細緻，不容易失手造成過度顯色，可由淺至深慢慢堆疊 。"
+  },
+
+ {
+rank: 9,
+    name: "專業後台煥采亮妍盤",
+     brand: "DIOR 迪奧",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/86898/1/_160x160_86898.jpg",
+    description:"超好上手，可完美疊擦，一抹肌膚立即光采照人，所有膚色皆適用。"
+  },
+
+
+ {
+rank: 10,
+    name: "女神光打亮餅",
+     brand: "Solone",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/90028/1/_160x160_90028_20191206025335WOyviWyUHe.png",
+    description:"結合珍珠與光亮粉的微爍細緻粉體，粉質細膩柔滑，不顯毛孔，能完美折射於各種角度，使肌膚澎潤明亮，呈現精緻透亮感。"
+  }
+
+        ];
+        const lipstickTop10=[
+        {
+        rank: 1,
+    name: "怪獸級持色唇膏 LIP MONSTER",
+     brand: "KATE TOKYO 凱婷",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/101429/1/_160x160_101429_20210616024926PEtgdoOHCt.jpg",
+    description:"不易脫落、超水潤、高顯色。"
+  },
+
+ {
+rank: 2,
+    name: "怪獸級持色唇膏(水光)",
+     brand: "KATE TOKYO 凱婷",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/121320/1/_160x160_121320_20241231065745tBENgdrPSw.jpg",
+    description:"絲滑亮澤，高持色，高顯色，高保濕。"
+  },
+
+
+ {
+rank: 3,
+    name: "光誘恆吻唇膏 NENMAKU FAKE ROUGE",
+     brand: "VISEE",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/112039/1/_160x160_112039_20230531023409vXFFckudey.jpg",
+    description:"輕盈柔滑服貼雙唇，顯現水潤透亮。長時間維持美麗色澤。不易沾杯或沾染口罩，實現高持色不易脫粧的效果。無添加香料。"
+  },
+
+
+ {
+rank: 4,
+    name: "蜜糖嘟嘟鏡光唇膏",
+     brand: "Estée Lauder 雅詩蘭黛",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/122651/1/_160x160_122651_20250401022148FabfadTUuy.jpg",
+    description:"水光唇膏推薦，鏡面唇蜜質感，滋養豐盈雙唇。"
+  },
+
+
+ {
+rank: 5,
+    name: "激情過後水光唇膏",
+     brand: "NARS",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/113077/1/_160x160_113077_20230710013523QBBYgNpuQg.jpg",
+    description:"一抹水光打造立體澎潤唇，8小時美唇保養，保濕同時修護。"
+  },
+
+
+ {
+rank: 6,
+    name: "果凍唇膏 GLASTING MELTING BALM",
+     brand: "rom&nd",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/112012/1/_160x160_112012_20230612102334BJcddWIyWt.png",
+    description:"純素無刺激性，使用天然植物性原料。添加植物萃取精油，防止雙唇水分流失，形成強力水光膜。"
+  },
+
+
+ {
+rank: 7,
+    name: "尼龍柔霧唇膏",
+     brand: "PRADA Beauty",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/120887/1/_160x160_120887_20241214025009GiXaBWOlNx.jpg",
+    description:"高級霧面妝效持久長達 12 小時，輕盈無感，舒適服貼。"
+  },
+
+ {
+rank: 8,
+    name: "撩心口紅 creamy rouge",
+     brand: "CHIC CHOC 奇可俏可",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/116422/2/_160x160_35068.jpg",
+    description:"高保濕唇膜，輕盈無負擔。高服貼緊密貼合唇部肌膚、均勻上色呈現柔光飽和色感。可長時間維持剛上妝時的妝感，由內而外透出柔光感。"
+  },
+
+ {
+rank: 9,
+    name: "絕對完美唇膏-絲絨霧感 ABSOLU ROUGE MATTE",
+     brand: "LANCÔME 蘭蔻",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/116149/1/_160x160_116149_20240110040901ByHhExzvda.jpg",
+    description:""
+  },
+
+
+ {
+rank: 10,
+    name: "OPERA",
+     brand: "渲漾水色唇膏N OPERA Lip Tint N",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/103131/1/_160x160_103131_20211015100117GTiPBKPWwY.png",
+    description:"輕抹上唇柔焦撫紋，滑順顯色超持妝。質地輕盈細緻、柔滑顯色不顯紋。 "
+  }
+
+        ];
+        const setting_sprayTop10=[
+            {
+rank: 1,
+    name: "無極限持久定妝噴霧",
+     brand: "shu uemura 植村秀",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/95399/1/_160x160_95399_20200317100156wdINXhdYOj.png",
+    description:"極細噴頭，秒成膜速定妝。適合有乾燥卡粉困擾的乾肌，一噴保濕定妝；明星控油款適合有出油浮粉的油肌，一噴吸油霧化。"
+  },
+
+ {
+rank: 2,
+    name: "無極限控油定妝噴霧",
+     brand: "shu uemura 植村秀",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/110258/1/_160x160_110258_20230222023159GGRqTDgQbj.jpg",
+    description:"定妝超磨皮，精修毛孔。形成超輕透保護膜，不易因摩擦掉妝，整日妝容細緻零浮粉且無油光！"
+  },
+
+
+ {
+rank: 3,
+    name: "超持久極細雙效定妝噴霧",
+     brand: "MAYBELLINE 媚比琳",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/120934/1/_160x160_120934_20241218005545JqnxTgEEkh.jpg",
+    description:"24H控油持久，奈米級噴頭。抗摩擦零沾染，防止暈染零脫妝！持妝更持色，持久服貼不掉色！鎖妝不緊繃，輕盈舒適不悶臉！控油、保濕、細緻服貼！"
+  },
+
+
+ {
+rank: 4,
+    name: "我愛超磁妝定妝噴霧",
+     brand: "I'M MEME",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/105752/1/_160x160_105752_20220627142713bTewJKvddS.jpg",
+    description:"磁吸鎖妝科技，長效控油持妝，不沾染。運用草棉仔提取物，達到控油鎖水效果，快乾而不緊繃。細緻噴霧，能均勻貼合妝面，清爽不黏膩!"
+  },
+
+
+ {
+rank: 5,
+    name: "FIX+超持妝零暗沉定妝噴霧",
+     brand: "M.A.C",
+    image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZWGr7d7aADg9SaP4IEhm2jPvEhgu1eYOBNS0IKn3delnHzBYmzcylP9DeJoQXCjTr19I&usqp=CAU",
+    description:"細緻雲霧 ，無添加酒精。植萃配方，肌膚加倍水潤，長效持妝。"
+  },
+
+
+ {
+rank: 6,
+    name: "美顏定格持粧噴霧 PLUS",
+     brand: "KOSE 高絲",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/117351/1/_160x160_117351_20240327053440JSFJWLLHBl.jpg",
+    description:""
+  },
+
+
+ {
+rank: 7,
+    name: "高絲蔻絲媚影美顏定格持粧噴霧",
+     brand: "KOSE 高絲",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/100874/1/_160x160_100874_20210428084313PpyyzZjmVu.jpg",
+    description:"抗水、汗水、淚水！超強控油效果！預防泛油光等脫粧問題。保濕預防乾燥所造成的脫粧問題。通過敏感性測試和不致粉刺測試。"
+  },
+
+ {
+rank: 8,
+    name: "透妍定妝噴霧",
+     brand: "ORBIS",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/118044/1/_160x160_118044_20240521074734xkuXQLTrcX.png",
+    description:"水霧細緻，控油，保濕。防水、防汗、防脫妝!"
+  },
+
+ {
+rank: 9,
+    name: "心機星魅三效美肌定格噴霧EX",
+     brand: "MAQuillAGE 心機彩粧",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/104509/1/_160x160_104509_20220301014518BkoQgSESEL.jpg",
+    description:"防摩擦、防水防汗，極細緻水霧。"
+ },
+{
+rank: 10,
+    name: "Oil Block! 超控油定妝噴霧EX",
+     brand: "1028",
+    image_url: "https://dg9ugnb21lig7.cloudfront.net/uploads/product_image/122465/1/_160x160_122465_20250321011329WdSxrgGNFy.jpg",
+    description:"細緻水霧均勻噴灑無死角，持妝快速成膜，全天穩固不脫妝，控油定妝不乾澀。"
+  }
+
+        ]
+    const dataMap = {
+      foundation: foundationTop10,
+      concealer: concealerTop10,
+      eyebrow: eyebrowTop10,
+     eyeliner:eyelinerTop10,
+     mascara:mascaraTop10,
+     blush:blushTop10,
+     contour:contourTop10,
+     lipstick:lipstickTop10,
+     setting_spray:setting_sprayTop10
+    }
+
+
+
+    const container = document.getElementById('list-container');
+    const select = document.getElementById('category');
+
+    // Function to render the list
+    function renderList(categoryValue) {
+      // If the selected value is empty (i.e., "--請選擇--"), clear the container
+      if (categoryValue === "") {
+        container.innerHTML = '';
+        return; // Exit the function
+      }
+
+      const list = dataMap[categoryValue] || [];
+      container.innerHTML = ''; // Clear previous content
+
+      if (list.length) {
+        const ul = document.createElement('ul');
+        list.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <img src="${item.image_url}" alt="${item.name}">
+            <div class="product-info">
+              <div class="info-left">
+                <div class="rank-title">TOP ${item.rank}</div>
+                <div class="product-name">${item.name}</div>
+                <div class="product-brand">${item.brand}</div>
+              </div>
+              <div class="product-description">${item.description || ''}</div>
+            </div>
+          `;
+          ul.appendChild(li);
+        });
+        container.appendChild(ul);
+      }
+    }
+
+    // Event listener for category selection
+    select.addEventListener('change', (event) => {
+      renderList(event.target.value);
+    });
+
+    // **No initial rendering on page load**
+    // The select box will default to "--請選擇--" and the container will be empty.
+
+  </script>
+</body>
+</html>
